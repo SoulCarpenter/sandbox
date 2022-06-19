@@ -9,7 +9,12 @@ host = 'https://news.ycombinator.com/'
 page = 'show'
 URL = host + page
 
-def requ():
+async def get_page(p_url, p_name):
+    response = requests.get(p_url + p_name)
+    #open('testi.txt','wb').write(response.content)
+    return response.content
+
+async def requ():
     response = requests.get(URL)
     open('testi.txt','wb').write(response.content)
 
