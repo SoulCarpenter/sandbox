@@ -49,8 +49,10 @@ def req_etree2():
 def collect_data(f_names):
     for f_name in f_names:
         content = open(f_name + '.txt', 'r').read()
-        doc = fromstring(content)
-        print('DOC: ' + doc.text_content())
+        tree = fromstring(content)
+        #print('TREE: ' + tree.text_content())
+        ranks = tree.xpath('//span[@class="rank"]/text()')
+        print('RANKS: ' + str(ranks))
     print('collect_data ENDS!')
 
 async def main():
