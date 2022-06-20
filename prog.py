@@ -4,6 +4,7 @@ import time
 
 from lxml.html import parse
 from lxml.html import fromstring
+from lxml.cssselect import CSSSelector
 
 URL = 'https://news.ycombinator.com/'
 page1 = 'news'
@@ -53,6 +54,29 @@ def collect_data(f_names):
         #print('TREE: ' + tree.text_content())
         ranks = tree.xpath('//span[@class="rank"]/text()')
         print('RANKS: ' + str(ranks))
+        sel_headlines = CSSSelector('.titlelink')
+        sel_ranks = CSSSelector('.rank')
+        sel_subtext = CSSSelector('.subtext')
+        sel_points = CSSSelector('.score')
+        sel_author = CSSSelector('.hnuser')
+        sel_age = CSSSelector('.age > a')
+        #[e.get('id') for e in sel(tree)]
+        print('SEL PATH: ' + str(sel_headlines.path))
+        print('OUTPUT ITEMS')
+        headlines = sel_headlines(tree)
+        ranks = sel_ranks(tree)
+        i = 0
+        for item in sel_subtext(tree):
+            t = {}
+            print('TITLE: ' + str(headlines[i].text_content()) + ' ITEM: ' + str(item.text_content()))
+            t['title'] = headlines[i].text_content()
+            t['rank'] = ranks[i].text_content()
+            t['points'] = "0 points" if len(sel_points(item)) == 0 else sel_points(item)[0].text
+            t['author'] = "No author" if len(sel_author(item)) == 0 else sel_author(item)[0].text
+            t['age'] = sel_age(item)[0].text
+            #t['age'] = str(sel_age(item).text)
+            print('T: ' + str(t)) 
+            i+=1
     print('collect_data ENDS!')
 
 async def main():
