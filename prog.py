@@ -12,6 +12,7 @@ URL = 'https://news.ycombinator.com/'
 page1 = 'news'
 page2 = 'show'
 page3 = 'ask'
+DEBUG = True
 
 async def get_page(p_url, p_name):
     print('Fetching page: ' + p_name)
@@ -27,8 +28,9 @@ async def get_page(p_url, p_name):
 def collect_data(f_names):
     all_data = []
     for f_name in f_names:
-        content = open(f_name + '.txt', 'r').read()
-        tree = fromstring(content)
+        with open(f_name + '.txt') as f:
+            tree = fromstring(f.read())
+
         sel_headlines = CSSSelector('.titlelink')
         sel_ranks = CSSSelector('.rank')
         sel_subtext = CSSSelector('.subtext')
@@ -52,8 +54,23 @@ def collect_data(f_names):
     print('collect_data ENDS!')
     return all_data
 
+def d_print(s):
+    if DEBUG:
+        print(s)
+
 def print_json(d):
-    print(json.dumps(d, indent=4))
+    d_print(json.dumps(d, indent=4))
+
+def sort_list_by_dict_key(p_key, p_list):
+    return sorted(p_list, key=operator.itemgetter(p_key), reverse=True)
+
+def save_content_to_file(p_fname, p_list):
+    print_json(p_list)
+    with open(p_fname, 'w', encoding='utf-8') as fout:
+        for i in p_list:
+            line = ' '.join(str(e) for e in i.values())
+            d_print(line)
+            fout.write(line + "\n")
 
 async def main():
     print('Main program starts ...')
@@ -63,27 +80,9 @@ async def main():
         get_page(URL, page1))
     files = [page1, page2, page3]
     data = collect_data(files)
-    newlist = sorted(data, key=operator.itemgetter('points'), reverse=True)
-    for i in newlist:
-        print('points: ' + str(i.get('points')) + ' rank: ' + i.get('rank') + ' comments: ' + str(i.get('num_comments')))
+    sorted_list = sort_list_by_dict_key('points', data)
     output_fname = 'outputfile.txt'
-    #with open(output_fname, 'w') as fout:
-    #    json.dump(newlist, fout)
-    fout = open(output_fname, 'w', encoding='utf-8')
-    #for d in newlist:
-    #    json.dump(d, fout)
-    #    fout.write("\n")
-    
-    #with open(output_fname, 'w') as fout:
-    #    fout.write(json.dumps(newlist, indent=4))
-    print_json(newlist)
-    for i in newlist:
-        line = ' '.join(str(e) for e in i.values())
-        print(line)
-        fout.write(line + "\n")
-    #print( '\n'.join(i.values()) for i in newlist )
+    save_content_to_file(output_fname, sorted_list)
     print(f"Fetched data saved to file: {output_fname}")
 
 asyncio.run(main())
-#req_etree()
-
