@@ -5,6 +5,7 @@ import time
 from lxml.html import parse
 from lxml.html import fromstring
 from lxml.cssselect import CSSSelector
+import operator
 
 URL = 'https://news.ycombinator.com/'
 page1 = 'news'
@@ -73,7 +74,7 @@ def collect_data(f_names):
             print('TITLE: ' + str(headlines[i].text_content()) + ' ITEM: ' + str(item.text_content()))
             t['title'] = headlines[i].text_content()
             t['rank'] = ranks[i].text_content()
-            t['points'] = "0 points" if len(sel_points(item)) == 0 else sel_points(item)[0].text
+            t['points'] = 0 if len(sel_points(item)) == 0 else int(sel_points(item)[0].text.split()[0])
             t['author'] = "No author" if len(sel_author(item)) == 0 else sel_author(item)[0].text
             t['age'] = sel_age(item)[0].text
             t['num_comments'] = sel_ncom(item)[-1].text.split()[0]
@@ -102,6 +103,9 @@ async def main():
     data = collect_data(files)
     print('ALL DATA: ' + str(data))
     print('ALL DATA LEN: ' + str(len(data)))
+    newlist = sorted(data, key=operator.itemgetter('points'))
+    for i in newlist:
+        print('points: ' + str(i.get('points')) + ' rank: ' + i.get('rank') + ' comments: ' + str(i.get('num_comments')))
     print('... World! ' + URL)
 
 asyncio.run(main())
