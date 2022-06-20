@@ -48,6 +48,7 @@ def req_etree2():
         print(x.text_content())
 
 def collect_data(f_names):
+    all_data = []
     for f_name in f_names:
         content = open(f_name + '.txt', 'r').read()
         tree = fromstring(content)
@@ -78,7 +79,9 @@ def collect_data(f_names):
             t['num_comments'] = sel_ncom(item)[-1].text.split()[0]
             print('T: ' + str(t)) 
             i+=1
+            all_data.append(t)
     print('collect_data ENDS!')
+    return all_data
 
 async def main():
     print('Hello ...')
@@ -94,9 +97,11 @@ async def main():
     #    asyncio.to_thread(task1),
     #    asyncio.to_thread(task2),
     #    asyncio.to_thread(task3))
-    #files = [page1, page2, page3]
-    files = [page1]
-    collect_data(files)
+    files = [page1, page2, page3]
+    #files = [page1]
+    data = collect_data(files)
+    print('ALL DATA: ' + str(data))
+    print('ALL DATA LEN: ' + str(len(data)))
     print('... World! ' + URL)
 
 asyncio.run(main())
