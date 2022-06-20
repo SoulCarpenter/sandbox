@@ -12,7 +12,7 @@ URL = 'https://news.ycombinator.com/'
 page1 = 'news'
 page2 = 'show'
 page3 = 'ask'
-DEBUG = True
+DEBUG = False
 
 async def get_page(p_url, p_name):
     print('Fetching page: ' + p_name)
