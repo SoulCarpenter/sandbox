@@ -16,8 +16,8 @@ page3 = 'ask'
 async def get_page(p_url, p_name):
 #def get_page(p_url, p_name):
     print('Fetching page: ' + p_name)
-    print('DONE -DEBUGGING')
-    return 0
+    #print('DONE -DEBUGGING')
+    #return 0
 
     s = time.perf_counter()    
     #response = requests.get(p_url + p_name)
