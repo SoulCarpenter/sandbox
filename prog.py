@@ -6,6 +6,7 @@ from lxml.html import parse
 from lxml.html import fromstring
 from lxml.cssselect import CSSSelector
 import operator
+import json
 
 URL = 'https://news.ycombinator.com/'
 page1 = 'news'
@@ -72,12 +73,12 @@ def collect_data(f_names):
         for item in sel_subtext(tree):
             t = {}
             print('TITLE: ' + str(headlines[i].text_content()) + ' ITEM: ' + str(item.text_content()))
+            t['points'] = 0 if len(sel_points(item)) == 0 else int(sel_points(item)[0].text.split()[0])
             t['title'] = headlines[i].text_content()
             t['rank'] = ranks[i].text_content()
-            t['points'] = 0 if len(sel_points(item)) == 0 else int(sel_points(item)[0].text.split()[0])
             t['author'] = "No author" if len(sel_author(item)) == 0 else sel_author(item)[0].text
             t['age'] = sel_age(item)[0].text
-            t['num_comments'] = sel_ncom(item)[-1].text.split()[0]
+            t['num_comments'] = sel_ncom(item)[-1].text.split()[0].replace('discuss','0')
             print('T: ' + str(t)) 
             i+=1
             all_data.append(t)
@@ -106,6 +107,16 @@ async def main():
     newlist = sorted(data, key=operator.itemgetter('points'))
     for i in newlist:
         print('points: ' + str(i.get('points')) + ' rank: ' + i.get('rank') + ' comments: ' + str(i.get('num_comments')))
+    output_fname = 'outputfile.txt'
+    #with open(output_fname, 'w') as fout:
+    #    json.dump(newlist, fout)
+    #fout = open(output_fname, 'w', encoding='utf-8')
+    #for d in newlist:
+    #    json.dump(d, fout)
+    #    fout.write("\n")
+    with open(output_fname, 'w') as fout:
+        fout.write(json.dumps(newlist, indent=4))
+    print(json.dumps(newlist, indent=4))
     print('... World! ' + URL)
 
 asyncio.run(main())
