@@ -60,6 +60,7 @@ def collect_data(f_names):
         sel_points = CSSSelector('.score')
         sel_author = CSSSelector('.hnuser')
         sel_age = CSSSelector('.age > a')
+        sel_ncom = CSSSelector('a:last-child')
         #[e.get('id') for e in sel(tree)]
         print('SEL PATH: ' + str(sel_headlines.path))
         print('OUTPUT ITEMS')
@@ -74,7 +75,7 @@ def collect_data(f_names):
             t['points'] = "0 points" if len(sel_points(item)) == 0 else sel_points(item)[0].text
             t['author'] = "No author" if len(sel_author(item)) == 0 else sel_author(item)[0].text
             t['age'] = sel_age(item)[0].text
-            #t['age'] = str(sel_age(item).text)
+            t['num_comments'] = sel_ncom(item)[-1].text.split()[0]
             print('T: ' + str(t)) 
             i+=1
     print('collect_data ENDS!')
