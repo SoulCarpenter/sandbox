@@ -13,6 +13,9 @@ page3 = 'ask'
 async def get_page(p_url, p_name):
 #def get_page(p_url, p_name):
     print('Fetching page: ' + p_name)
+    print('DONE -DEBUGGING')
+    return 0
+
     s = time.perf_counter()    
     #response = requests.get(p_url + p_name)
     #try:
@@ -43,6 +46,13 @@ def req_etree2():
     for x in doc.find_class('subtext'):
         print(x.text_content())
 
+def collect_data(f_names):
+    for f_name in f_names:
+        content = open(f_name + '.txt', 'r').read()
+        doc = fromstring(content)
+        print('DOC: ' + doc.text_content())
+    print('collect_data ENDS!')
+
 async def main():
     print('Hello ...')
     await asyncio.gather(
@@ -57,6 +67,9 @@ async def main():
     #    asyncio.to_thread(task1),
     #    asyncio.to_thread(task2),
     #    asyncio.to_thread(task3))
+    #files = [page1, page2, page3]
+    files = [page1]
+    collect_data(files)
     print('... World! ' + URL)
 
 asyncio.run(main())
