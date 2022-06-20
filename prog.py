@@ -104,19 +104,22 @@ async def main():
     data = collect_data(files)
     print('ALL DATA: ' + str(data))
     print('ALL DATA LEN: ' + str(len(data)))
-    newlist = sorted(data, key=operator.itemgetter('points'))
+    newlist = sorted(data, key=operator.itemgetter('points'), reverse=True)
     for i in newlist:
         print('points: ' + str(i.get('points')) + ' rank: ' + i.get('rank') + ' comments: ' + str(i.get('num_comments')))
     output_fname = 'outputfile.txt'
     #with open(output_fname, 'w') as fout:
     #    json.dump(newlist, fout)
-    #fout = open(output_fname, 'w', encoding='utf-8')
-    #for d in newlist:
-    #    json.dump(d, fout)
-    #    fout.write("\n")
-    with open(output_fname, 'w') as fout:
-        fout.write(json.dumps(newlist, indent=4))
-    print(json.dumps(newlist, indent=4))
+    fout = open(output_fname, 'w', encoding='utf-8')
+    for d in newlist:
+        json.dump(d, fout)
+        fout.write("\n")
+    #with open(output_fname, 'w') as fout:
+    #    fout.write(json.dumps(newlist, indent=4))
+    #print(json.dumps(newlist, indent=4))
+    for i in newlist:
+        print( ' '.join(str(e) for e in i.values()) )
+    #print( '\n'.join(i.values()) for i in newlist )
     print('... World! ' + URL)
 
 asyncio.run(main())
